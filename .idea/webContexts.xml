@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebContextManager">
+    <option name="state">
+      <map>
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/disciplines.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/home.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/student-modify.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/students.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/terms.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/JSP/timetable.jsp" value="file://$PROJECT_DIR$/src/main/webapp/JSP" />
+      </map>
+    </option>
+  </component>
+</project>
