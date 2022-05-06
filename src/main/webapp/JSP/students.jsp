@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>Студенты</title>
     <link rel="stylesheet" href="../resources/css/style.css">
-    <script src="../resources/js/function.js"></script>
+    <script src="../resources/js/function.js" charset="UTF-8"></script>
 </head>
 <body>
 <header>
@@ -18,13 +18,27 @@
         <div class="navigation">
             <ul>
                 <li class="block">
-                    <a href="/home" class="buttonRed">На главную</a></li>
+                    <a href="/" class="buttonRed">На главную</a></li>
                 <li class="block">
-                    <a href="/student-progress" class="buttonRed" onclick="progressStudents()">Посмотреть успеваемость выбранных студентов</a></li>
+                    <a href="/student-progress" class="buttonRed" onclick="progressStudents()">Посмотреть успеваемость выбранных студентов</a>
+                </li>
+
+                <li class="block">
+                    <a class="buttonRed" onclick="progressToDayStudents()">Успеваемость за семестр</a>
+                </li>
+
                 <li class="block login">
-                    <a href="" class="buttonLogin"><span>logout</span></a>
+                    <c:choose>
+                        <c:when test="${isLogin eq 1}">
+                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/login" class="buttonLogin"><span>Login</span></a>
+                        </c:otherwise>
+                    </c:choose>
                 </li>
             </ul>
+            <c:if test="${role eq 1}">
             <ul class="adminButtons">
                 <li class="block1"><a href="/student-create" class="buttonRed">Создать студента</a></li>
                 <li class="block1"><a href="/create-group" class="buttonRed">Создать группу</a></li>
@@ -32,6 +46,7 @@
                     студента</button></li>
                 <li class="block1"><button type="submit" class="buttonRed" onclick="deleteStudents()">Удалить выбранного студента</button></li>
             </ul>
+            </c:if>
         </div>
     </nav>
 </header>
@@ -67,6 +82,10 @@
 
 <form action="/student-progress" method="get" id="progressForm">
     <input type="hidden" id="progressHidden" name="progressHidden">
+</form>
+
+<form action="/student-progress-to-day" method="get" id="progressToDayForm">
+    <input type="hidden" id="progressToDayHidden" name="progressToDayHidden">
 </form>
 
 </html>

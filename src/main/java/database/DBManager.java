@@ -2,13 +2,10 @@ package database;
 
 import constants.Constants;
 import entity.*;
+import entity.Calendar;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 public class DBManager implements IDBManager {
 
@@ -68,13 +65,15 @@ public class DBManager implements IDBManager {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from student where status = 1 and id = " + id);
+            ResultSet rs = stmt.executeQuery("SELECT s.id, s.surname, s.name, g.name_group, g.course, s.date FROM student as s\n" +
+                    "left join `group` as g on s.group_id = g.id\n" +
+                    "where s.status = 1 and s.id = " + id);
             while (rs.next()) {
                 Student student = new Student();
                 student.setId(rs.getInt("id"));
                 student.setName(rs.getString("name"));
                 student.setSurname(rs.getString("surname"));
-                student.setGroup(rs.getString("group"));
+                student.setGroup(rs.getString("name_group")+"-"+rs.getString("course"));
                 student.setDate(rs.getDate("date"));
                 student.setStatus(1);
                 return student;
@@ -483,6 +482,280 @@ public class DBManager implements IDBManager {
             e.printStackTrace();
         }
         return weeks;
+    }
+
+    @Override
+    public String getIdGroupWithIdTerm(String idTerm) {
+        String idGroup = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `term_group`\n" +
+                    "where `id_term` = "+idTerm+";");
+            while (rs.next()) {
+                idGroup = rs.getString("id_group");
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return idGroup;
+    }
+
+    @Override
+    public void setTimetableInTerm(String idDate, String idDiscipline, String idTerm, Integer posDisc) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO `timetable` (`id_date`, `id_discipline`, `id_term`, `position_disc`) VALUES ('"+idDate+"', '"+idDiscipline+"', '"+idTerm+"', '"+posDisc+"');");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Map<String, Map<String, Map<String, TimetableWithDisc>>> getTimetableByTerm(String idTerm) {
+        Map<String, Map<String, Map<String, TimetableWithDisc>>> weekWithDays = new LinkedHashMap<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT timetable.id, number_week,\n" +
+                    "dayname(`date`) as dn, discipline, position_disc FROM timetable\n" +
+                    "left join calendar on timetable.id_date = calendar.id\n" +
+                    "left join discipline on timetable.id_discipline = discipline.id\n" +
+                    "where id_term = "+idTerm+" and timetable.status = 1;");
+            while (rs.next()){
+                if(!weekWithDays.containsKey(rs.getString("number_week"))){
+                    Map<String, TimetableWithDisc> discInDay = new LinkedHashMap<>();
+                    Map<String, Map<String, TimetableWithDisc>> daysInWeek = new LinkedHashMap<>();
+                    TimetableWithDisc timetableWithDisc = new TimetableWithDisc();
+                    timetableWithDisc.setDiscipline(rs.getString("discipline"));
+                    timetableWithDisc.setId(rs.getString("id"));
+                    discInDay.put(rs.getString("position_disc"), timetableWithDisc);
+                    daysInWeek.put(rs.getString("dn"), discInDay);
+                    weekWithDays.put(rs.getString("number_week"), daysInWeek);
+                } else if(!weekWithDays.get(rs.getString("number_week"))
+                        .containsKey(rs.getString("dn"))){
+                    Map<String, TimetableWithDisc> discInDay = new LinkedHashMap<>();
+                    TimetableWithDisc timetableWithDisc = new TimetableWithDisc();
+                    timetableWithDisc.setDiscipline(rs.getString("discipline"));
+                    timetableWithDisc.setId(rs.getString("id"));
+                    discInDay.put(rs.getString("position_disc"), timetableWithDisc);
+                    weekWithDays.get(rs.getString("number_week"))
+                            .put(rs.getString("dn"), discInDay);
+                } else if (!weekWithDays.get(rs.getString("number_week"))
+                        .get(rs.getString("dn")).containsKey(rs.getString("position_disc"))) {
+                    TimetableWithDisc timetableWithDisc = new TimetableWithDisc();
+                    timetableWithDisc.setDiscipline(rs.getString("discipline"));
+                    timetableWithDisc.setId(rs.getString("id"));
+                    weekWithDays.get(rs.getString("number_week"))
+                            .get(rs.getString("dn"))
+                            .put(rs.getString("position_disc"), timetableWithDisc);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return weekWithDays;
+    }
+
+    @Override
+    public List<String> getTermsByDiscipline(String idDisc) {
+        List<String> idTerms = new ArrayList<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT distinct id_term FROM timetable\n" +
+                    "where id_discipline = "+idDisc+" and status = 1;");
+            while (rs.next()){
+                idTerms.add(rs.getString("id_term"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return idTerms;
+    }
+
+    @Override
+    public List<Student> getAllStudentsByIdTerm(String idTerm) {
+        List<Student> students = new ArrayList<>();
+        String idGroup = "";
+        if(idTerm == " "){
+            return students;
+        }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT distinct g.id FROM `timetable` as t\n" +
+                    "left join `term_group` as tg on tg.id_term = t.id_term\n" +
+                    "left join `group` as g on tg.id_group = g.id\n" +
+                    "where t.id_term = "+idTerm+" and t.status = 1;");
+            while (rs.next()){
+                idGroup = rs.getString("id");
+            }
+            if (idGroup == ""){
+                return students;
+            }
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM student\n" +
+                    "where group_id = "+idGroup+" and status = 1;");
+            while (resultSet.next()){
+                Student student = new Student();
+                student.setId(resultSet.getInt("id"));
+                student.setSurname(resultSet.getString("surname"));
+                student.setName(resultSet.getString("name"));
+                student.setDate(resultSet.getDate("date"));
+                student.setGroup(resultSet.getString("group_id"));
+                student.setStatus(1);
+                students.add(student);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    @Override
+    public Map<String, List<Timetable>> getTimetableByTermAndDisc(String idTerm, String idDisc) {
+        Map<String, List<Timetable>> weekWithDays = new LinkedHashMap<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT timetable.id, number_week,\n" +
+                    "dayname(`date`) as dn, `date`, discipline, position_disc FROM timetable\n" +
+                    "left join calendar on timetable.id_date = calendar.id\n" +
+                    "left join discipline on timetable.id_discipline = discipline.id\n" +
+                    "where id_term = "+idTerm+" and timetable.status = 1 and timetable.id_discipline = "+idDisc+";");
+            while (rs.next()){
+                if(!weekWithDays.containsKey(rs.getString("number_week"))){
+                    List<Timetable> timetables = new ArrayList<>();
+                    Timetable timetable = new Timetable();
+                    timetable.setId(rs.getString("id"));
+                    timetable.setDate(rs.getDate("date"));
+                    timetable.setPosDisc(rs.getString("position_disc"));
+                    timetables.add(timetable);
+                    weekWithDays.put(rs.getString("number_week"), timetables);
+                } else {
+                    Timetable timetable = new Timetable();
+                    timetable.setId(rs.getString("id"));
+                    timetable.setDate(rs.getDate("date"));
+                    timetable.setPosDisc(rs.getString("position_disc"));
+                    weekWithDays.get(rs.getString("number_week"))
+                            .add(timetable);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return weekWithDays;
+    }
+
+    @Override
+    public Map<String, String> getAllMarksInTerm(String idTerm) {
+        Map<String, String> marksInTerm = new LinkedHashMap<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT student_id, id_timetable, id_term, mark FROM student_performance\n" +
+                    "left join timetable on student_performance.id_timetable = timetable.id\n" +
+                    "where id_term = "+idTerm+";");
+            while (rs.next()){
+                marksInTerm.put(rs.getString("student_id")+rs.getString("id_timetable"), rs.getString("mark"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return marksInTerm;
+    }
+
+    @Override
+    public void setMarkInDB(String idStudent, String idTimetable, String mark) {
+        String idPerformance = " ";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM student_performance\n" +
+                    "where student_id = "+idStudent+" and id_timetable = "+idTimetable+";");
+            while (rs.next()){
+                idPerformance = rs.getString("id");
+            }
+            if(idPerformance.equals(" ")){
+                stmt.execute("INSERT INTO `student_performance` (`student_id`, `id_timetable`, `mark`)\n" +
+                        " VALUES ('"+idStudent+"', '"+idTimetable+"', '"+mark+"');");
+            } else {
+                stmt.execute("UPDATE `student_performance` SET `mark` = '"+mark+"' WHERE (`id` = '"+idPerformance+"');");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Term> getTermsByStudentId(String idStudent) {
+        List<Term> terms = new ArrayList<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT t.id, t.num_term, t.duration FROM student as s\n" +
+                    "left join term_group as tg on s.group_id = tg.id_group \n" +
+                    "left join term as t on tg.id_term = t.id\n" +
+                    "where s.id = "+idStudent+" and s.status = 1 and t.status = 1;");
+            while (rs.next()){
+                Term term = new Term();
+                term.setId(rs.getString("id"));
+                term.setNumTerm(rs.getString("num_term"));
+                term.setDuration(rs.getString("duration"));
+                term.setStatus("1");
+                terms.add(term);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return terms;
+    }
+
+    @Override
+    public Map<String, String> getAllMarksByStudentAndTerm(String idStudent, String idTerm) {
+        Map<String, String> marksByStudentAndTerm = new LinkedHashMap<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT student_id, id_timetable, id_term, mark FROM student_performance\n" +
+                    "left join timetable on student_performance.id_timetable = timetable.id\n" +
+                    "where id_term = "+idTerm+" and student_id = "+idStudent+";");
+            while (rs.next()){
+                marksByStudentAndTerm.put(rs.getString("id_timetable"), rs.getString("mark"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return marksByStudentAndTerm;
+    }
+
+    @Override
+    public boolean canLogin(String login, String password, String role) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constants.DB_URL_CONNECTION);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM user_role as ur\n" +
+                    "left join user as u on ur.id_user = u.id\n" +
+                    "where u.login = '"+login+"' and u.password = '"+password+"' and ur.id_role = "+role+";");
+            while (rs.next()){
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

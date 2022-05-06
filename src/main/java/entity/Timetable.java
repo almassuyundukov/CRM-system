@@ -1,21 +1,23 @@
 package entity;
 
-import java.util.ArrayList;
+import java.sql.Date;
 
 public class Timetable {
     private String id;
-    private ArrayList<TimetableOneDate> timetableOneDates;
+    private Date date;
+    private String idDiscipline;
     private String idTerm;
-    private String idGroup;
+    private String posDisc;
 
     public Timetable() {
     }
 
-    public Timetable(String id, ArrayList<TimetableOneDate> timetableOneDates, String idTerm, String idGroup) {
+    public Timetable(String id, Date date, String idDiscipline, String idTerm, String posDisc) {
         this.id = id;
-        this.timetableOneDates = timetableOneDates;
+        this.date = date;
+        this.idDiscipline = idDiscipline;
         this.idTerm = idTerm;
-        this.idGroup = idGroup;
+        this.posDisc = posDisc;
     }
 
     public String getId() {
@@ -26,12 +28,20 @@ public class Timetable {
         this.id = id;
     }
 
-    public ArrayList<TimetableOneDate> getTimetableOneDates() {
-        return timetableOneDates;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTimetableOneDates(ArrayList<TimetableOneDate> timetableOneDates) {
-        this.timetableOneDates = timetableOneDates;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getIdDiscipline() {
+        return idDiscipline;
+    }
+
+    public void setIdDiscipline(String idDiscipline) {
+        this.idDiscipline = idDiscipline;
     }
 
     public String getIdTerm() {
@@ -42,13 +52,14 @@ public class Timetable {
         this.idTerm = idTerm;
     }
 
-    public String getIdGroup() {
-        return idGroup;
+    public String getPosDisc() {
+        return posDisc;
     }
 
-    public void setIdGroup(String idGroup) {
-        this.idGroup = idGroup;
+    public void setPosDisc(String posDisc) {
+        this.posDisc = posDisc;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -58,18 +69,20 @@ public class Timetable {
         Timetable timetable = (Timetable) o;
 
         if (id != null ? !id.equals(timetable.id) : timetable.id != null) return false;
-        if (timetableOneDates != null ? !timetableOneDates.equals(timetable.timetableOneDates) : timetable.timetableOneDates != null)
+        if (date != null ? !date.equals(timetable.date) : timetable.date != null) return false;
+        if (idDiscipline != null ? !idDiscipline.equals(timetable.idDiscipline) : timetable.idDiscipline != null)
             return false;
         if (idTerm != null ? !idTerm.equals(timetable.idTerm) : timetable.idTerm != null) return false;
-        return idGroup != null ? idGroup.equals(timetable.idGroup) : timetable.idGroup == null;
+        return posDisc != null ? posDisc.equals(timetable.posDisc) : timetable.posDisc == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (timetableOneDates != null ? timetableOneDates.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (idDiscipline != null ? idDiscipline.hashCode() : 0);
         result = 31 * result + (idTerm != null ? idTerm.hashCode() : 0);
-        result = 31 * result + (idGroup != null ? idGroup.hashCode() : 0);
+        result = 31 * result + (posDisc != null ? posDisc.hashCode() : 0);
         return result;
     }
 
@@ -77,9 +90,10 @@ public class Timetable {
     public String toString() {
         return "Timetable{" +
                 "id='" + id + '\'' +
-                ", timetableOneDates=" + timetableOneDates +
+                ", idDate=" + date +
+                ", idDiscipline='" + idDiscipline + '\'' +
                 ", idTerm='" + idTerm + '\'' +
-                ", idGroup='" + idGroup + '\'' +
+                ", posDisc='" + posDisc + '\'' +
                 '}';
     }
 }

@@ -23,18 +23,18 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="../resources/js/function.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#group option[value=${nameGroup}]').prop('selected', true);
-            $('#selectDisc option[value=${idTerm}]').prop('selected', true);
-            $('#years option[value=${idYears}]').prop('selected', true);
-            $('#firstWeek option[value=${firstWeek}]').prop('selected', true);
-            $('#termHidden option[value=${nameGroup}]');
-            $('#exampleFormControlSelect2').change(function () {
-<c:forEach items="${weeksInTermWithDays}" var="week">
-                $('#${week.numberWeek}')[$(this).val() == '${week.numberWeek}' ? 'show' : 'hide']();
-                </c:forEach>
-            });
+    $(document).ready(function () {
+        $('#group option[value=${nameGroup}]').prop('selected', true);
+        $('#selectDisc option[value=${idTerm}]').prop('selected', true);
+        $('#years option[value=${idYears}]').prop('selected', true);
+        $('#firstWeek option[value=${firstWeek}]').prop('selected', true);
+        $('#termHidden option[value=${nameGroup}]');
+        $('#exampleFormControlSelect2').change(function () {
+            <c:forEach items="${weeksInTermWithDays}" var="week">
+            $('#week${week.numberWeek}')[$(this).val() == 'week${week.numberWeek}' ? 'show' : 'hide']();
+            </c:forEach>
         });
+    });
     </script>
 </head>
 <body>
@@ -46,16 +46,23 @@
         <div class="navigation">
             <ul>
                 <li class="block">
-                    <a href="/home" class="buttonRed">На главную</a></li>
+                    <a href="/" class="buttonRed">На главную</a></li>
                 <li class="block login">
-                    <a href="" class="buttonLogin"><span>logout</span></a>
+                    <c:choose>
+                        <c:when test="${isLogin eq 1}">
+                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/login" class="buttonLogin"><span>Login</span></a>
+                        </c:otherwise>
+                    </c:choose>
                 </li>
                 <li><span>Текущий год: 2021-2022</span></li>
             </ul>
 
             <ul class="adminButtons">
                 <li class="block1">
-                    <button type="submit" class="buttonRed" onclick="deleteStudents()">Создать</button>
+                    <button type="submit" class="buttonRed" onclick="createTimetable()" id="click">Создать</button>
                 </li>
                 <li class="block1">
                     <button type="submit" class="buttonRed" onclick="deleteStudents()">Удалить расписание</button>
@@ -69,11 +76,12 @@
                 </c:forEach>
             </select>
 
-            <label for="selectDisc">Выбрать семестр: </label><select name="" id="selectDisc">
+            <label for="selectDisc">Выбрать семестр: </label>
+            <select name="" id="selectDisc">
             <c:forEach items="${terms}" var="t">
                 <option value="${t.id}">Семестр ${t.numTerm}</option>
             </c:forEach>
-        </select>
+            </select>
 
             <label for="years">Выбрать год:&nbsp;&nbsp;</label>
             <select name="" id="years" onchange="selectYears()">
@@ -101,108 +109,122 @@
     <select class="form-control" id="exampleFormControlSelect2" name="view">
         <option value="0"></option>
         <c:forEach items="${weeksInTerm}" var="weeks">
-            <option value="${weeks}">${weeks} неделя</option>
+            <option value="week${weeks}">${weeks} неделя</option>
         </c:forEach>
     </select>
 </div>
+
+<form action="/create-time-all" method="post" id="allParamsWithoutDisciplinesForm">
 <div>
     <c:forEach items="${weeksInTermWithDays}" var="week">
-    <table class="disciplinesStudent disciplines" id="${week.numberWeek}" hidden="hidden">
-        <tr>
-            <th></th>
-            <th class="dayOfWeek">Понедельник, <c:out value="${week.getDaysOfWeek().get(0).date}" /></th>
-            <th class="emptyColumn"></th>
-            <th></th>
-            <th class="dayOfWeek">Четверг, <c:out value="${week.getDaysOfWeek().get(3).date}" /></th>
-        </tr>
-        <c:forEach items="${list}" var="list">
-        <tr>
-            <td>${list}</td>
-            <td>
-                <select>
-                    <option value="-1"></option>
-                    <c:forEach items="${disciplines}" var="disc">
-                        <option value="${disc.id}">${disc.discipline}</option>
-                    </c:forEach>
-                </select>
-            </td>
-            <td class="emptyColumn"></td>
-            <td>${list}</td>
-            <td>
-                <select>
-                    <option value="-1"></option>
-                    <c:forEach items="${disciplines}" var="disc">
-                        <option value="${disc.id}">${disc.discipline}</option>
-                    </c:forEach>
-                </select>
-            </td>
-        </tr>
-        </c:forEach>
-        <tr>
-            <th></th>
-            <th class="dayOfWeek">Вторник, <c:out value="${week.getDaysOfWeek().get(1).date}" /></th>
-            <th class="emptyColumn"></th>
-            <th></th>
-            <th class="dayOfWeek">Пятница, <c:out value="${week.getDaysOfWeek().get(4).date}" /></th>
-        </tr>
-        <c:forEach items="${list}" var="list">
+        <table class="disciplinesStudent disciplines" id="${week.numberWeek}" hidden="hidden">
             <tr>
-                <td>${list}</td>
-                <td>
-                    <select>
-                        <option value="-1"></option>
-                        <c:forEach items="${disciplines}" var="disc">
-                            <option value="${disc.id}">${disc.discipline}</option>
-                        </c:forEach>
-                    </select>
-                </td>
-                <td class="emptyColumn"></td>
-                <td>${list}</td>
-                <td>
-                    <select>
-                        <option value="-1"></option>
-                        <c:forEach items="${disciplines}" var="disc">
-                            <option value="${disc.id}">${disc.discipline}</option>
-                        </c:forEach>
-                    </select>
-                </td>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(0).id}">Понедельник, <c:out
+                        value="${week.getDaysOfWeek().get(0).date}"/></th>
+                <th class="emptyColumn"></th>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(3).id}">Четверг, <c:out
+                        value="${week.getDaysOfWeek().get(3).date}"/></th>
             </tr>
-        </c:forEach>
-        <tr>
-            <th></th>
-            <th class="dayOfWeek">Среда, <c:out value="${week.getDaysOfWeek().get(2).date}" /></th>
-            <th class="emptyColumn"></th>
-            <th></th>
-            <th class="dayOfWeek">Суббота, <c:out value="${week.getDaysOfWeek().get(5).date}" /></th>
-        </tr>
-        <c:forEach items="${list}" var="list">
+            <c:forEach items="${list}" var="list">
+                <tr>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(0).id}${list}" name="${week.getDaysOfWeek().get(0).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}" id="${list}${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td class="emptyColumn"></td>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(3).id}${list}" name="${week.getDaysOfWeek().get(3).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+            </c:forEach>
             <tr>
-                <td>${list}</td>
-                <td>
-                    <select>
-                        <option value="-1"></option>
-                        <c:forEach items="${disciplines}" var="disc">
-                            <option value="${disc.id}">${disc.discipline}</option>
-                        </c:forEach>
-                    </select>
-                </td>
-                <td class="emptyColumn"></td>
-                <td>${list}</td>
-                <td>
-                    <select>
-                        <option value="-1"></option>
-                        <c:forEach items="${disciplines}" var="disc">
-                            <option value="${disc.id}">${disc.discipline}</option>
-                        </c:forEach>
-                    </select>
-                </td>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(1).id}">Вторник, <c:out
+                        value="${week.getDaysOfWeek().get(1).date}"/></th>
+                <th class="emptyColumn"></th>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(4).id}">Пятница, <c:out
+                        value="${week.getDaysOfWeek().get(4).date}"/></th>
             </tr>
+            <c:forEach items="${list}" var="list">
+                <tr>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(1).id}${list}" name="${week.getDaysOfWeek().get(1).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td class="emptyColumn"></td>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(4).id}${list}" name="${week.getDaysOfWeek().get(4).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+            </c:forEach>
+            <tr>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(2).id}">Среда, <c:out
+                        value="${week.getDaysOfWeek().get(2).date}"/></th>
+                <th class="emptyColumn"></th>
+                <th></th>
+                <th class="dayOfWeek" id="${week.getDaysOfWeek().get(5).id}">Суббота, <c:out
+                        value="${week.getDaysOfWeek().get(5).date}"/></th>
+            </tr>
+            <c:forEach items="${list}" var="list">
+                <tr>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(2).id}${list}" name="${week.getDaysOfWeek().get(2).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td class="emptyColumn"></td>
+                    <td>${list}</td>
+                    <td>
+                        <select id="${week.getDaysOfWeek().get(5).id}${list}" name="${week.getDaysOfWeek().get(5).id}${list}">
+                            <option value="9"></option>
+                            <c:forEach items="${disciplines}" var="disc">
+                                <option value="${disc.id}">${disc.discipline}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+        <c:forEach items="${list}" var="list">
+            <input type="hidden" id="${week.getDaysOfWeek().get(6).id}${list}" name="${week.getDaysOfWeek().get(6).id}${list}" value="9">
         </c:forEach>
-    </table>
     </c:forEach>
-
-
 </div>
+
+    <input type="hidden" id="daysHidden" name="daysHidden" value="${weeksInTermWithDays}">
+    <input type="hidden" id="idTermHidden" name="idTermHidden" value="${idTerm}">
+
+</form>
 </body>
 
 <form action="/create-timetable" method="post" id="termForm">
@@ -211,10 +233,6 @@
     <input type="hidden" id="yearsHidden" name="yearsHidden">
     <input type="hidden" id="firstWeekHidden" name="firstWeekHidden">
     <input type="hidden" id="durationHidden" name="durationHidden" value="${duration}">
-</form>
-
-<form action="/create-time-all" method="get" id="allParamsWithoutDisciplinesForm">
-    <input type="hidden" id="allParamsWithoutDisciplinesFormHidden" name="allParamsWithoutDisciplinesFormHidden">
 </form>
 
 </html>

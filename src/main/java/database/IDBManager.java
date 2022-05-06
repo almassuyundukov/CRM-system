@@ -3,6 +3,7 @@ package database;
 import entity.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDBManager {
 
@@ -45,4 +46,26 @@ public interface IDBManager {
     List<String> getWeeksInTerm(String firstWeek, String duration, String idYear);
 
     List<Week> getAllDayInTerm(List<String> weekList, String idYear);
+
+    String getIdGroupWithIdTerm(String idTerm);
+
+    void setTimetableInTerm(String idDate, String idDiscipline, String idTerm, Integer posDisc);
+
+    Map<String, Map<String, Map<String, TimetableWithDisc>>>  getTimetableByTerm(String idTerm);
+
+    List<String> getTermsByDiscipline(String idDisc);
+
+    List<Student> getAllStudentsByIdTerm(String idTerm);
+
+    Map<String, List<Timetable>>  getTimetableByTermAndDisc(String idTerm, String idDisc);
+
+    Map<String, String> getAllMarksInTerm(String idTerm);
+
+    void setMarkInDB (String idStudent, String idTimetable, String mark);
+
+    List<Term> getTermsByStudentId (String idStudent);
+
+    Map<String, String> getAllMarksByStudentAndTerm(String idStudent, String idTerm);
+
+    boolean canLogin(String login, String password, String role);
 }

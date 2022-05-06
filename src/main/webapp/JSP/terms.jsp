@@ -27,9 +27,16 @@
         <div class="navigation">
             <ul>
                 <li class="block">
-                    <a href="/home" class="buttonRed">На главную</a></li>
+                    <a href="/" class="buttonRed">На главную</a></li>
                 <li class="block login">
-                    <a href="" class="buttonLogin"><span>logout</span></a>
+                    <c:choose>
+                        <c:when test="${isLogin eq 1}">
+                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/login" class="buttonLogin"><span>Login</span></a>
+                        </c:otherwise>
+                    </c:choose>
                 </li>
             </ul>
             <ul class="adminButtons">
