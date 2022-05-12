@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Дисциплины</title>
     <link rel="stylesheet" href="../resources/css/style.css">
+    <script src="../resources/js/function.js"></script>
 </head>
 <body>
 <header>
@@ -21,7 +22,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -30,10 +31,13 @@
                 </li>
             </ul>
             <ul class="adminButtons">
-                <li class="block1"><a href="./disciplineCreating.html" class="buttonRed">Создать дисциплину</a></li>
-                <li class="block1"><a href="./disciplineMod.html" class="buttonRed">Модифицировать выбранную дисциплину</a>
+                <li class="block1"><a href="/discipline-create" class="buttonRed">Создать дисциплину</a></li>
+                <li class="block1">
+                    <button type="submit" class="buttonRed" onclick="modifyDiscipline()">Модифицировать выбранную дисциплину</button>
                 </li>
-                <li class="block1"><a href="" class="buttonRed">Удалить выбранную дисциплину</a></li>
+                <li class="block1">
+                    <button type="submit" class="buttonRed" onclick="deleteDisciplines()">Удалить выбранную дисциплину</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -45,13 +49,22 @@
             <th></th>
             <th>Наименование дисциплины</th>
         </tr>
-<c:forEach items="${disciplines}" var="st">
+<c:forEach items="${disciplines}" var="disc">
         <tr>
-            <td><input type="checkbox" name="" id="${st.id}"></td>
-            <td><label for="${st.id}">${st.discipline}</label></td>
+            <td><input type="checkbox" name="disciplineId" id="${disc.id}" value="${disc.id}"></td>
+            <td><label for="${disc.id}">${disc.discipline}</label></td>
         </tr>
 </c:forEach>
     </table>
 </div>
 </body>
+
+<form action="/discipline-modify" method="get" id="discModifyForm">
+    <input type="hidden" id="discModifyHidden" name="discModifyHidden">
+</form>
+
+<form action="/discipline-delete" method="post" id="discDeleteForm">
+    <input type="hidden" id="discDeleteHidden" name="discDeleteHidden">
+</form>
+
 </html>

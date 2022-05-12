@@ -7,17 +7,19 @@ public class Student {
     private String name;
     private String surname;
     private String group;
+    private String groupId;
     private Date date;
     private int status;
 
     public Student() {
     }
 
-    public Student(int id, String name, String surname, String group, Date date, int status) {
+    public Student(int id, String name, String surname, String group, String groupId, Date date, int status) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.group = group;
+        this.groupId = groupId;
         this.date = date;
         this.status = status;
     }
@@ -54,6 +56,14 @@ public class Student {
         this.group = group;
     }
 
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -82,6 +92,7 @@ public class Student {
         if (name != null ? !name.equals(student.name) : student.name != null) return false;
         if (surname != null ? !surname.equals(student.surname) : student.surname != null) return false;
         if (group != null ? !group.equals(student.group) : student.group != null) return false;
+        if (groupId != null ? !groupId.equals(student.groupId) : student.groupId != null) return false;
         return date != null ? date.equals(student.date) : student.date == null;
     }
 
@@ -91,6 +102,7 @@ public class Student {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (groupId != null ? groupId.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + status;
         return result;
@@ -103,6 +115,7 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", group='" + group + '\'' +
+                ", groupId='" + groupId + '\'' +
                 ", date=" + date +
                 ", status=" + status +
                 '}';

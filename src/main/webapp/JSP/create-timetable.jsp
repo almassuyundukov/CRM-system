@@ -50,7 +50,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -117,7 +117,7 @@
 <form action="/create-time-all" method="post" id="allParamsWithoutDisciplinesForm">
 <div>
     <c:forEach items="${weeksInTermWithDays}" var="week">
-        <table class="disciplinesStudent disciplines" id="${week.numberWeek}" hidden="hidden">
+        <table class="disciplinesStudent disciplines" id="week${week.numberWeek}" hidden="hidden">
             <tr>
                 <th></th>
                 <th class="dayOfWeek" id="${week.getDaysOfWeek().get(0).id}">Понедельник, <c:out

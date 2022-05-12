@@ -1,6 +1,7 @@
 package controllers;
 
 import database.DBManager;
+import entity.Group;
 import entity.Student;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @WebServlet(name = "StudentsModifyController", urlPatterns = "/student-modify")
@@ -24,6 +26,8 @@ public class StudentsModifyController extends HttpServlet {
         String id = req.getParameter("modifyHidden");
         DBManager dbManager = new DBManager();
         Student student = dbManager.getStudentById(id);
+        List<Group> groups = dbManager.getAllActiveGroups();
+        req.setAttribute("groups", groups);
         req.setAttribute("student", student);
         req.getRequestDispatcher("JSP/student-modify.jsp").forward(req, resp);
     }
@@ -33,7 +37,7 @@ public class StudentsModifyController extends HttpServlet {
         String id = req.getParameter("id");
         String surname = req.getParameter("surname");
         String name = req.getParameter("name");
-        String groupId = req.getParameter("group");
+        String groupId = req.getParameter("groups");
         String dateFromUser = req.getParameter("date");
 
 
@@ -44,7 +48,7 @@ public class StudentsModifyController extends HttpServlet {
         }
 
         // String -> Date -> String
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         Date date = null;
         try {
             date = format.parse(dateFromUser);
@@ -56,7 +60,7 @@ public class StudentsModifyController extends HttpServlet {
         String dateToDatabase = formatter.format(date);
 
         DBManager manager = new DBManager();
-        manager.createStudent(surname, name, groupId, dateToDatabase);
+        manager.updateStudent(id, surname, name, groupId, dateToDatabase);
 
         resp.sendRedirect("/students");
     }

@@ -1,4 +1,3 @@
-
 function deleteStudents(){
     var checkedCheckboxs = document.querySelectorAll('input[name=idStudent]:checked')
     if(checkedCheckboxs.length == 0){
@@ -14,6 +13,41 @@ function deleteStudents(){
 
     document.getElementById("deleteHidden").value = ids;
     document.getElementById('deleteForm').submit();
+}
+
+function deleteDisciplines(){
+    var checkedCheckboxs = document.querySelectorAll('input[name=disciplineId]:checked')
+    if(checkedCheckboxs.length == 0){
+        alert("Выберите хотя бы одну дисциплину!!!");
+        return;
+    }
+
+    // 1-2-5-7 - string
+    var ids = ""
+    for(var i = 0; i < checkedCheckboxs.length; i++){
+        ids = ids + checkedCheckboxs[i].value + " ";
+    }
+
+    document.getElementById("discDeleteHidden").value = ids;
+    document.getElementById('discDeleteForm').submit();
+
+}
+
+function modifyDiscipline(){
+    var checkedCheckboxs = document.querySelectorAll('input[name=disciplineId]:checked')
+    if(checkedCheckboxs.length == 0){
+        alert("Выберите дисциплину!!!");
+        return;
+    }
+
+    if(checkedCheckboxs.length > 1){
+        alert("Выберите только одну дисциплину!!!");
+        return;
+    }
+    // 1 - string
+    var id = checkedCheckboxs[0].value;
+    document.getElementById("discModifyHidden").value = id;
+    document.getElementById('discModifyForm').submit();
 
 }
 
@@ -188,4 +222,30 @@ function getStudentPerfForTerm(){
 
     document.getElementById("downloadTimetableForStudentHidden").value = "1";
     document.getElementById("progressForStudentForm").submit();
+}
+
+function modifyTimetable(){
+    document.getElementById("termModifyForm").submit();
+}
+
+function deleteTimetable(){
+    document.getElementById("timetableDeleteForm").submit();
+}
+
+function createStudent(){
+    var checkedCheckboxs = document.querySelectorAll('input[name=idStudent]:checked')
+    if(checkedCheckboxs.length == 0){
+        alert("Выберите студента!!!");
+        return;
+    }
+
+    if(checkedCheckboxs.length > 1){
+        alert("Выберите только одного студента!!!");
+        return;
+    }
+    // 1 - string
+    var id = checkedCheckboxs[0].value;
+    document.getElementById("studentIdHidden").value = id;
+    document.getElementById('createStudentForm').submit();
+
 }

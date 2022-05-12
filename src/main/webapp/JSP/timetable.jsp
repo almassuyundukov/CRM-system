@@ -25,7 +25,7 @@
     <script>
         $(document).ready(function () {
             $('#group option[value=${nameGroup}]').prop('selected', true);
-            $('#selectDisc option[value=${idTerm}]').prop('selected', true);
+            $('#selectTerm option[value=${idTerm}]').prop('selected', true);
             $('#termHidden option[value=${nameGroup}]');
             $('#exampleFormControlSelect2').change(function () {
                 <c:forEach items="${weeks}" var="w">
@@ -59,7 +59,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -70,10 +70,11 @@
 
             <ul class="adminButtons">
                 <li class="block1"><a href="/create-timetable" class="buttonRed">Создать расписание</a></li>
-                <li class="block1"><a href="./modTimetable.html" class="buttonRed">Модифицировать выбранное
-                    расписание</a></li>
                 <li class="block1">
-                    <button type="submit" class="buttonRed" onclick="deleteStudents()">Удалить расписание</button>
+                    <button type="submit" class="buttonRed" onclick="modifyTimetable()">Изменить расписание</button>
+                </li>
+                <li class="block1">
+                    <button type="submit" class="buttonRed" onclick="deleteTimetable()">Удалить расписание</button>
                 </li>
                 <li class="block1"><a href="/create-calendar" class="buttonRed">Создать год</a></li>
             </ul>
@@ -123,12 +124,12 @@
             <c:forEach items="${list}" var="i">
                 <tr>
                     <td>${i}</td>
-                    <td id="${timetable.get(week).get('Saturday').get(i).id}">
+                    <td id="${timetable.get(week).get('Monday').get(i).id}">
                         <c:out value="${timetable.get(week).get('Monday').get(i).discipline}"/>
                     </td>
                     <td class="emptyColumn"></td>
                     <td>${i}</td>
-                    <td id="${timetable.get(week).get('Saturday').get(i).id}">
+                    <td id="${timetable.get(week).get('Thursday').get(i).id}">
                         <c:out value="${timetable.get(week).get('Thursday').get(i).discipline}"/>
                     </td>
                 </tr>
@@ -143,12 +144,12 @@
             <c:forEach items="${list}" var="i">
                 <tr>
                     <td>${i}</td>
-                    <td id="${timetable.get(week).get('Saturday').get(i).id}">
+                    <td id="${timetable.get(week).get('Tuesday').get(i).id}">
                         <c:out value="${timetable.get(week).get('Tuesday').get(i).discipline}"/>
                     </td>
                     <td class="emptyColumn"></td>
                     <td>${i}</td>
-                    <td id="${timetable.get(week).get('Saturday').get(i).id}">
+                    <td id="${timetable.get(week).get('Friday').get(i).id}">
                         <c:out value="${timetable.get(week).get('Friday').get(i).discipline}"/>
                     </td>
                 </tr>
@@ -163,7 +164,7 @@
             <c:forEach items="${list}" var="i">
                 <tr>
                     <td>${i}</td>
-                    <td id="${timetable.get(week).get('Saturday').get(i).id}">
+                    <td id="${timetable.get(week).get('Wednesday').get(i).id}">
                         <c:out value="${timetable.get(week).get('Wednesday').get(i).discipline}"/>
                     </td>
                     <td class="emptyColumn"></td>
@@ -182,6 +183,16 @@
 <form action="/timetable" method="post" id="termForm">
     <input type="hidden" id="termHidden" name="termHidden">
     <input type="hidden" id="selectTermHidden" name="selectTermHidden">
+</form>
+
+<form action="/timetable-modify" method="get" id="termModifyForm">
+    <input type="hidden" id="selectTermByModifyHidden" name="selectTermByModifyHidden" value="${idTerm}">
+    <input type="hidden" id="selectGroupByModifyHidden" name="selectGroupByModifyHidden" value="${nameGroup}">
+    <input type="hidden" id="selectNumTermByModifyHidden" name="selectNumTermByModifyHidden" value="${t.numTerm}">
+</form>
+
+<form action="/timetable-delete" method="post" id="timetableDeleteForm">
+    <input type="hidden" id="termForDeleteHidden" name="termForDeleteHidden" value="${idTerm}">
 </form>
 
 </html>

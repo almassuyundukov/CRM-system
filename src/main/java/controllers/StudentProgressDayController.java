@@ -21,7 +21,13 @@ public class StudentProgressDayController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String id = req.getParameter("progressToDayHidden");
+        String role = (String) req.getSession().getAttribute("role");
+        String id = "";
+        if (role.equals("3")){
+            id = (String) req.getSession().getAttribute("student");
+        } else {
+            id = req.getParameter("progressToDayHidden");
+        }
         DBManager manager = new DBManager();
         Student student = manager.getStudentById(id);
         List<Term> terms = manager.getTermsByStudentId(id);
@@ -40,7 +46,7 @@ public class StudentProgressDayController extends HttpServlet {
             accessButton = "0";
         }
         if (accessButton.equals("1")){
-            Map<String, Map<String, Map<String, TimetableWithDisc>>> timetableByTerm = manager.getTimetableByTerm(idTerm);
+            Map<String, Map<String, Map<String, Timetable>>> timetableByTerm = manager.getTimetableByTerm(idTerm);
 
             Set<String> weeks = timetableByTerm.keySet();
 

@@ -6,16 +6,18 @@ public class Timetable {
     private String id;
     private Date date;
     private String idDiscipline;
+    private String discipline;
     private String idTerm;
     private String posDisc;
 
     public Timetable() {
     }
 
-    public Timetable(String id, Date date, String idDiscipline, String idTerm, String posDisc) {
+    public Timetable(String id, Date date, String idDiscipline, String discipline, String idTerm, String posDisc) {
         this.id = id;
         this.date = date;
         this.idDiscipline = idDiscipline;
+        this.discipline = discipline;
         this.idTerm = idTerm;
         this.posDisc = posDisc;
     }
@@ -42,6 +44,14 @@ public class Timetable {
 
     public void setIdDiscipline(String idDiscipline) {
         this.idDiscipline = idDiscipline;
+    }
+
+    public String getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(String discipline) {
+        this.discipline = discipline;
     }
 
     public String getIdTerm() {
@@ -72,6 +82,7 @@ public class Timetable {
         if (date != null ? !date.equals(timetable.date) : timetable.date != null) return false;
         if (idDiscipline != null ? !idDiscipline.equals(timetable.idDiscipline) : timetable.idDiscipline != null)
             return false;
+        if (discipline != null ? !discipline.equals(timetable.discipline) : timetable.discipline != null) return false;
         if (idTerm != null ? !idTerm.equals(timetable.idTerm) : timetable.idTerm != null) return false;
         return posDisc != null ? posDisc.equals(timetable.posDisc) : timetable.posDisc == null;
     }
@@ -81,6 +92,7 @@ public class Timetable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (idDiscipline != null ? idDiscipline.hashCode() : 0);
+        result = 31 * result + (discipline != null ? discipline.hashCode() : 0);
         result = 31 * result + (idTerm != null ? idTerm.hashCode() : 0);
         result = 31 * result + (posDisc != null ? posDisc.hashCode() : 0);
         return result;
@@ -90,8 +102,9 @@ public class Timetable {
     public String toString() {
         return "Timetable{" +
                 "id='" + id + '\'' +
-                ", idDate=" + date +
+                ", date=" + date +
                 ", idDiscipline='" + idDiscipline + '\'' +
+                ", discipline='" + discipline + '\'' +
                 ", idTerm='" + idTerm + '\'' +
                 ", posDisc='" + posDisc + '\'' +
                 '}';

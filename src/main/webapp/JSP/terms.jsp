@@ -31,7 +31,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>

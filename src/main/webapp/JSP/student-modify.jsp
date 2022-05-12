@@ -1,4 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -6,6 +7,19 @@
     <meta charset="UTF-8">
     <title>Изменение студента</title>
     <link rel="stylesheet" href="../resources/css/style.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#groups option[value=${student.groupId}]').prop('selected', true);
+        });
+        $( function() {
+            $( "#datepicker" ).datepicker();
+        } );
+    </script>
 </head>
 <body>
 <header>
@@ -21,7 +35,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -47,11 +61,17 @@
         </tr>
         <tr>
             <td class="labelStudents">Группа</td>
-            <td><input type="text" name="group" value="${student.group}" maxlength="50" size="20"></td>
+            <td>
+                <select name="groups" id="groups">
+                    <c:forEach items="${groups}" var="gr">
+                        <option value="${gr.id}">${gr.name_group}-${gr.course}</option>
+                    </c:forEach>
+                </select>
+            </td>
         </tr>
         <tr>
             <td class="labelStudents">Дата поступления:</td>
-            <td><input type="date" name="date" value="<fmt:formatDate pattern="dd/MM/yyyy" value="${student.date}"/>" maxlength="50" size="20"></td>
+            <td><input type="text" name="date" id="datepicker" value="<fmt:formatDate pattern="dd/MM/yyyy" value="${student.date}"/>" maxlength="50" size="20"></td>
         </tr>
     </table>
 

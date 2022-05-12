@@ -4,8 +4,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Изменение дисциплины</title>
     <link rel="stylesheet" href="../resources/css/style.css">
+
 </head>
 <body>
 <header>
@@ -17,6 +18,7 @@
             <ul>
                 <li class="block">
                     <a href="/" class="buttonRed">На главную</a></li>
+                </li>
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
@@ -31,28 +33,15 @@
         </div>
     </nav>
 </header>
-<div action="" class="stModform">
-    <span>Для изменения выбранного семестра, отредактируйте данные и нажмите кнопку "Применить"</span><br>
-    <span>Группа: </span>
-    <span><c:out value="${term.group}"/></span>
-
-    <span>Семестр: </span>
-    <span><c:out value="${term.numTerm}"/></span>
-    <label>Длительность (в неделях): <input type="text" name="" value="${term.duration}"></label><br>
-    <div class="termsMod">
-        <span>Список дисциплин:</span>
-        <div class="termsList">
-            <c:forEach items="${allActiveDisciplines}" var="allDisc">
-            <div class="termWithCheckbox">
-                <input type="checkbox" name="" id="${disc.id}">
-                <div class="term">
-                    <label for="${disc.id}">${allDisc.discipline}</label>
-                </div>
-            </div>
-            </c:forEach>
-        </div>
-        <button class="btn btn3">Применить</button>
-    </div>
+<div class="stModform">
+    <form method="post" action="/discipline-modify">
+    <span>Для изменения семестра, введите новые значения и нажмите кнопку "Применить"</span><br>
+        <input type="hidden" value="${discipline.id}" name="idDisc">
+    <label for="${discipline.id}">Название: <input type="text" name="discipline" value="${discipline.discipline}" id="${discipline.id}">
+    </label>
+    <br>
+    <button type="submit" class="btn btn1">Применить</button>
+    </form>
 </div>
 </body>
 </html>

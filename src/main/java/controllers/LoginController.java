@@ -24,14 +24,43 @@ public class LoginController extends HttpServlet {
 
         DBManager manager = new DBManager();
 
-        if(manager.canLogin(login, password, role)){
-            req.getSession().setAttribute("role", role);
-            req.getSession().setAttribute("login", login);
-            req.getSession().setAttribute("isLogin", 1);
-            resp.sendRedirect("/");
-        } else {
-            req.setAttribute("error", "1");
-            req.getRequestDispatcher("JSP/login.jsp").forward(req, resp);
+        manager.getIdStudentByLogin(login,password);
+        if (role.equals("1")){
+            if(manager.canLogin(login, password, role)){
+                req.getSession().setAttribute("role", role);
+                req.getSession().setAttribute("login", login);
+                req.getSession().setAttribute("isLogin", 1);
+                resp.sendRedirect("/");
+            } else {
+                req.setAttribute("error", "1");
+                req.getRequestDispatcher("JSP/login.jsp").forward(req, resp);
+            }
+        }
+        if (role.equals("2")){
+            if(manager.canLogin(login, password, role)){
+                String idDisc = manager.getIdDiscByLogin(login, password);
+                req.getSession().setAttribute("role", role);
+                req.getSession().setAttribute("login", login);
+                req.getSession().setAttribute("idDisc", idDisc);
+                req.getSession().setAttribute("isLogin", 1);
+                resp.sendRedirect("/");
+            } else {
+                req.setAttribute("error", "1");
+                req.getRequestDispatcher("JSP/login.jsp").forward(req, resp);
+            }
+        }
+        if (role.equals("3")){
+            if(manager.canLogin(login, password, role)){
+                String student = manager.getIdStudentByLogin(login, password);
+                req.getSession().setAttribute("role", role);
+                req.getSession().setAttribute("login", login);
+                req.getSession().setAttribute("student", student);
+                req.getSession().setAttribute("isLogin", 1);
+                resp.sendRedirect("/");
+            } else {
+                req.setAttribute("error", "1");
+                req.getRequestDispatcher("JSP/login.jsp").forward(req, resp);
+            }
         }
     }
 }

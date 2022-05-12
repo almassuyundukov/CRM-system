@@ -15,7 +15,15 @@ public interface IDBManager {
 
     Student getStudentById(String id);
 
+    void updateStudent(String id,String surname, String name, String groupId, String date);
+
     List<Discipline> getAllActiveDisciplines();
+
+    void createDiscipline(String discipline);
+
+    void deleteDiscipline(String idDiscipline);
+
+    void updateDiscipline(String idDiscipline, String discipline);
 
     void createCalendar(String startDate, String endDate, String firstWeek);
 
@@ -51,7 +59,13 @@ public interface IDBManager {
 
     void setTimetableInTerm(String idDate, String idDiscipline, String idTerm, Integer posDisc);
 
-    Map<String, Map<String, Map<String, TimetableWithDisc>>>  getTimetableByTerm(String idTerm);
+    Map<String, Map<String, Map<String, Timetable>>> getTimetableByTerm(String idTerm);
+
+    void updateTimetableInTerm(String idTimetable, String idDiscipline);
+
+    void deleteTimetableByTerm(String idTerm);
+
+    Map<String, String> getTimetableWithDiscByTerm(String idTerm);
 
     List<String> getTermsByDiscipline(String idDisc);
 
@@ -67,5 +81,19 @@ public interface IDBManager {
 
     Map<String, String> getAllMarksByStudentAndTerm(String idStudent, String idTerm);
 
+    Discipline getDisciplineById(String discId);
+
     boolean canLogin(String login, String password, String role);
+
+    boolean canCreateUser(String login);
+
+    void createUserAdmin(String login, String password);
+
+    void createUserTeacher(String login, String password, String idDiscipline);
+
+    void createUserStudent(String login, String password, String idStudent);
+
+    String getIdStudentByLogin(String login, String password);
+
+    String getIdDiscByLogin(String login, String password);
 }

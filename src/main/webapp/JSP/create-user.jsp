@@ -8,7 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../resources/css/style.css">
-    <title>Создание пользователя</title>
+    <title>Login page</title>
 </head>
 <body>
 <div id="container">
@@ -17,7 +17,7 @@
     </header>
     <main>
         <section class="form_log">
-            <h2 class="log_title">Создание пользователя</h2>
+            <h2 class="log_title">Вход в систему</h2>
             <form action="/login" method="post">
                 <div class="line">
                     <div>Логин</div>

@@ -15,23 +15,9 @@
     <header>
         <h1>Система управления студентами и их успеваемостью</h1>
     </header>
-    <main>
-        <section class="form_log">
-            <h2 class="log_title">Создание пользователя</h2>
-            <form action="/login" method="post">
-                <div class="line">
-                    <div>Логин</div>
-                    <label>
-                        <input type="text" name="login">
-                    </label>
-                </div>
-                <div class="line">
-                    <div>Пароль</div>
-                    <label>
-                        <input type="text" name="password">
-                    </label>
-                </div>
-                <div class="line">
+            <h2 class="log_title">Выбор роли для создания пользователя</h2>
+            <form action="/select-role" method="post">
+                <div class="stModform">
                     <div>Выберите роль</div>
                     <label>
                         <select name="role">
@@ -42,18 +28,10 @@
                     </label>
                 </div>
 
-                <input class="button_enter" type="submit" value="Войти">
+                <div class="block1">
+                <button type="submit" class="buttonSelectUser">Выбрать</button>
+                </div>
             </form>
-        </section>
-    </main>
-
-    <c:if test="${error == '1'}">
-        <h4>Неверный логин или пароль или роль!!!</h4>
-    </c:if>
-
-    <footer>
-        <div>&copy; 2022 Almas Suyundukov</div>
-    </footer>
 </div>
 </body>
 </html>

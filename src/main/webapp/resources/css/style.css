@@ -78,14 +78,17 @@ button.buttonRed {
 button.buttonRed:hover { background: rgb(232,95,76); } /* при наведении курсора мышки */
 button.buttonRed:active { background: rgb(152,15,0); }
 
-.buttonLogin {
+.buttonLogin, .buttonLogout {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     padding: 15px;
     color: #383d48;
 }
-.buttonLogin span {
+
+
+.navigation .buttonLogin span,
+.navigation .buttonLogout span{
     display: block;
     overflow: hidden;
     max-width: 0;
@@ -108,10 +111,29 @@ button.buttonRed:active { background: rgb(152,15,0); }
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 22px;
+    font-size: 12px;
 }
 
 .buttonLogin:hover span {
+    max-width: 150px;
+    opacity: 1;
+    margin-right: 6px;
+}
+
+.buttonLogout:after {
+    content: url(../images/icon-logout.svg);
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 12px;
+}
+
+.buttonLogout:hover span {
     max-width: 150px;
     opacity: 1;
     margin-right: 6px;
@@ -335,4 +357,24 @@ fieldset {
 
 .weekInTerm{
     visibility: hidden;
+}
+
+button.buttonSelectUser{
+    position: relative;
+    color: #fff; /* цвет текста */
+    background: rgb(212,75,56); /* фон кнопки */
+    padding: .8em 1.5em; /* отступ от текста */
+    outline: none; /* убирать контур в Mozilla */
+    border: 1px solid black;
+    font-size: 15px;
+    top: 10px;
+    cursor: pointer;
+}
+
+button.buttonSelectUser:hover { background: rgb(232,95,76); } /* при наведении курсора мышки */
+button.buttonSelectUser:active { background: rgb(152,15,0); }
+
+footer{
+    position: relative;
+    top: 10px;
 }

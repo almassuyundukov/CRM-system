@@ -25,7 +25,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -35,11 +35,17 @@
                 <li class="block">
                     <a href="/timetable" class="buttonRed">Расписание</a>
                 </li>
-
                 <li class="block">
                     <a href="/progress-for-teacher" class="buttonRed">Электронный журнал</a>
                 </li>
             </ul>
+
+            <c:if test="${role eq 1}">
+                <ul class="adminButtons">
+                    <li class="block1"><a href="/select-role" class="buttonRed">Создать роль</a></li>
+                </ul>
+            </c:if>
+
         </div>
     </nav>
 </header>

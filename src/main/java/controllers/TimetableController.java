@@ -83,7 +83,7 @@ public class TimetableController extends HttpServlet {
             idTerm = terms.get(0).getId();
         }
 
-        Map<String, Map<String, Map<String, TimetableWithDisc>>> timetableByTerm = manager.getTimetableByTerm(idTerm);
+        Map<String, Map<String, Map<String, Timetable>>> timetableByTerm = manager.getTimetableByTerm(idTerm);
         Set<String> weeksInTerm = timetableByTerm.keySet();
 
         req.setAttribute("weeks", weeksInTerm);

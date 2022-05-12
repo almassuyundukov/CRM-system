@@ -30,7 +30,7 @@
                 <li class="block login">
                     <c:choose>
                         <c:when test="${isLogin eq 1}">
-                            <a href="/logout" class="buttonLogin"><span>${login}, logout</span></a>
+                            <a href="/logout" class="buttonLogout"><span>${login}, logout</span></a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="buttonLogin"><span>Login</span></a>
@@ -44,7 +44,9 @@
                 <li class="block1"><a href="/create-group" class="buttonRed">Создать группу</a></li>
                 <li class="block1"><button type="submit" class="buttonRed" onclick="modifyStudents()">Модифицировать выбранного
                     студента</button></li>
-                <li class="block1"><button type="submit" class="buttonRed" onclick="deleteStudents()">Удалить выбранного студента</button></li>
+                <li class="block1">
+                    <button type="submit" class="buttonRed" onclick="deleteStudents()">Удалить выбранного студента</button>
+                </li>
             </ul>
             </c:if>
         </div>
@@ -57,7 +59,6 @@
         <th>Фамилия</th>
         <th>Имя</th>
         <th>Группа</th>
-        <th>Курс</th>
         <th>Дата поступления</th>
     </tr>
     <c:forEach items="${students}" var="st">
@@ -66,9 +67,9 @@
             <td><label for="${st.id}">${st.surname}</label></td>
             <td><label for="${st.id}">${st.name}</label></td>
             <td><label for="${st.id}">${st.group}</label></td>
-            <td><label for="${st.id}">${st.group}</label></td>
             <td><label for="${st.id}"><fmt:formatDate pattern="dd/MM/yyyy" value="${st.date}"/></label></td>
         </tr>
+        <input type="hidden" name="groupId" value="${st.groupId}">
     </c:forEach>
 </table>
 </body>
